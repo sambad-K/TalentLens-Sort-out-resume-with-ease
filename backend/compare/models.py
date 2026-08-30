@@ -43,3 +43,17 @@ class Vacancy(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Resume(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    resume_file = models.FileField(upload_to='resumes/')
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
+    applied_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.name
+class AcceptedResume(models.Model):
+    resume=models.ForeignKey(Resume, on_delete=models.CASCADE) 
+class RejectedResume(models.Model):
+    resume=models.ForeignKey(Resume, on_delete=models.CASCADE)

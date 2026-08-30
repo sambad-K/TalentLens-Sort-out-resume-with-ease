@@ -25,10 +25,20 @@ class LoginView(generics.GenericAPIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         refresh = RefreshToken.for_user(user)
+        is_admin = bool(user.is_staff or user.is_superuser or user.username.strip().lower() == 'admin')
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
-        })       
+            'is_admin': is_admin,
+            'isAdmin': is_admin,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'is_admin': is_admin,
+                'isAdmin': is_admin,
+            },
+        })
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def logout(request):

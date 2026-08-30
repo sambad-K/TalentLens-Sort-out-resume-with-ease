@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
-
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,9 +41,11 @@ INSTALLED_APPS = [
     'authentication',
     "rest_framework_simplejwt.token_blacklist",
     "compare",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -121,14 +123,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -136,4 +132,40 @@ REST_FRAMEWORK = {
       "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+SPECTACULAR_SETTINGS = {
+    "TITLE": "TalentLens API",
+    "DESCRIPTION": "API documentation for TalentLens",
+    "VERSION": "1.0.0",
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:5175",
+    "http://localhost:5176",
+]
+
+EMAIL_SENDER = config("EMAIL_SENDER")
+EMAIL_PASSWORD = config("EMAIL_HOST_PASSWORD")
+
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "smtp.gmail.com",
+            "port": 587,
+            "username": EMAIL_SENDER,
+            "password": EMAIL_PASSWORD,
+            "use_tls": True,
+        },
+    }
+}
+
+DEFAULT_FROM_EMAIL = EMAIL_SENDER
