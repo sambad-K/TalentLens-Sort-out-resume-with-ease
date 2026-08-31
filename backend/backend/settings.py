@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-774td*6c%^5j*+=*7m&09ho^^vpp%*l9rpkna-d#q-02tznfm7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'corsheaders',
     'django.contrib.staticfiles',
     'rest_framework',
     'authentication',
@@ -150,7 +151,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5174",
     "http://127.0.0.1:5174",
     "http://localhost:5175",
-    "http://localhost:5176",
+    "https://talentlens-frontend.pages.dev",
 ]
 
 EMAIL_SENDER = config("EMAIL_SENDER")
@@ -165,11 +166,13 @@ MAILERS = {
             "username": EMAIL_SENDER,
             "password": EMAIL_PASSWORD,
             "use_tls": True,
+            "use_ssl": False,
         },
     }
 }
 
 DEFAULT_FROM_EMAIL = EMAIL_SENDER
+SERVER_EMAIL = EMAIL_SENDER
 
 
 
@@ -183,3 +186,6 @@ DATABASES = {
         ssl_require=True,
     )
 }
+CSRF_TRUSTED_ORIGINS = [
+    "https://talentlens-frontend.pages.dev",
+]
